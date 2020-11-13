@@ -1,0 +1,6 @@
+{
+    "/frontend/static/js/frontend.min.js": "/frontend/static/js/frontend.min.js",
+    "/frontend/static/js/admin.min.js": "/frontend/static/js/admin.min.js",
+    "/frontend/static/css/admin.min.css": "/frontend/static/css/admin.min.css",
+    "/frontend/static/css/all.min.css": "/frontend/static/css/all.min.css"
+}
