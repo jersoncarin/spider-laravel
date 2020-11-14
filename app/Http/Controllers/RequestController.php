@@ -20,7 +20,7 @@ class RequestController extends Controller
     {
         $accounts = RandNumbers::get();
 
-        return view('request.request',['page_title' => 'My Request', 'accounts' => $accounts,'req_type' => $request->type]);
+        return view('request.request',['page_title' => 'My Requests', 'accounts' => $accounts,'req_type' => $request->type]);
     }
 
     public function submit(Request $request) {
@@ -77,7 +77,7 @@ class RequestController extends Controller
 
         $requests = UserRequest::where('user_id',Auth::user()->id)->where('type',$request->type)->orderBy('request_date','desc')->paginate(10);
 
-        return view('request.history',['histories' => $requests,'request_type' => $request->type]);
+        return view('request.history',['histories' => $requests,'request_type' => $request->type,'page_title' => 'My Request History']);
     }
 
 }

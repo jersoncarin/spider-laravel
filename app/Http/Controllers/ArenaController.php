@@ -106,7 +106,8 @@ class ArenaController extends Controller
         $subjects = ChatSubject::where('user_id',Auth::user()->id)->orderBy('created_at','desc')->paginate(10);
 
         return view('chats.subject',[
-            'subjects' => $subjects
+            'subjects' => $subjects,
+            'page_title' => 'Customer Service Chat'
         ]);
     }
 
@@ -118,7 +119,8 @@ class ArenaController extends Controller
         if($subjects->status == 1)  return redirect('/user/ask/');
 
         return view('chats.view' , [
-            'subjects' => $subjects
+            'subjects' => $subjects,
+            'page_title' => 'CSC [' . $subjects->subject_name . ']'
         ]);
     }
 
