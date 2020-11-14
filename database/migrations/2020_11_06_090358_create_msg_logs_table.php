@@ -15,7 +15,7 @@ class CreateMsgLogsTable extends Migration
     {
         Schema::create('msg_logs', function (Blueprint $table) {
             $table->id();
-            $table->text('content')->default();
+            $table->text('content')->nullable();
             $table->timestamps();
         });
     }
