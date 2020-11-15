@@ -28,13 +28,13 @@ class Agent extends Controller
         } else {
             $code = Referral::where( 'agent_id' , Auth::user()->id )->first()->code;
         }
-        
+
         return view('agent.dashboard',[
             'page_title' => 'Dashboard',
             'total_commission' => bcdiv( BetLogs::where('user_id', Auth::user()->id )->where('action','Commission')->sum('amount') , 1 , 2),
             'total_active_users' => User::where('referral_code', $code )->where('activation',1)->count(),
             'total_pending_users' => User::where('referral_code', $code )->where('activation',0)->count(),
-            'users' => $users = User::where('referral_code', $code)
+            'users' => User::where('referral_code', $code)
             ->where(function($query) use($request) {
                 $query->where('username' , 'LIKE','%' . $request->q . '%')
                 ->orWhere('credits' , 'LIKE','%' . $request->q . '%');
@@ -95,6 +95,42 @@ class Agent extends Controller
         }
 
         return redirect()->back()->withErrors(['alert-msg' => 'User approved successfully!']);
+
+    }
+
+    public function transfer_credits_agent(Request $request) {
+
+        if(Auth::user()->user_role != 1) {
+            return redirect()->back()->withErrors(['alert-msg' => 'Error directives!']);
+        }
+
+        $user = User::where('username',$request->username)->first();
+        $agents = Referral::where( 'master_agent_id' , Auth::user()->id )->where( 'master_agent_id' , '!=' , 0 )->get();
+
+        if(!$user) {
+            return redirect()->back()->withErrors(['alert-msg' => 'User not found!']);
+        }
+
+        $hasDone = false;
+
+        foreach($agents as $agent) {
+
+            if($agent->agent_id == $user->id) {
+
+                DB::table('users')->where('id', $user->id)->update([
+                    'credits' => DB::raw('credits + ' . $request->amount )
+                ]);
+
+                $hasDone = true;
+                break;
+            }
+        }
+
+        if(!$hasDone) {
+            return redirect()->back()->withErrors(['alert-msg' => 'Failed to transfer points!']);
+        }
+
+        return redirect()->back()->withErrors(['alert-msg' => 'Successfully transfer points!']);
 
     }
 }

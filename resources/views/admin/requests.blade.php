@@ -43,7 +43,12 @@
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Total Deposit Users : {{ $request_count_deposit }}</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Total Deposit Users : {{ $request_count_deposit }}
+
+                            @if(Auth::user()->user_role == 1)
+                               <button class="btn btn-primary add btn-sm float-right" data-toggle="modal" data-target="#transfer"><span class="fas fa-exchange-alt"></span> Custom Transfer</button>
+                            @endif
+                            </h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive" style="overflow:auto!important; padding-right: 1px">
@@ -150,7 +155,12 @@
 
                                         <tr>
                                             <td>{{ $request->username }}</td>
-                                            <td>{{ $request->amount }}</td>
+                                            <td>
+                                            
+                                            {{ 'Request : ' . $request->amount }} <br>
+                                            {{ 'Deduction (5%) : ' . floatval($request->amount * 0.95) }}
+                                            
+                                            </td>
                                             <td>{{ $request->account_name }}</td>
                                             <td>{{ $request->account_number }}</td>
                                             <td>{{ $request->contact_number }}</td>
@@ -196,6 +206,50 @@
         <!-- End of Content Wrapper -->
 
     </div>
+
+    @if(Auth::user()->user_role == 1)
+
+    <div id="transfer" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+            <h5 class="modal-title">Custom Transfer</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body text-dark">
+
+                <form class="edit-form" method="POST" action="/admin/requests/transfer">
+                    {{ csrf_field() }}
+                    <div class="form-group">
+                        <label>Username </label>
+                        <input type="text" class="form-control text-dark" name="username"  placeholder="Enter username (Case Insensitive)" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount </label>
+                        <input type="number" class="form-control text-dark" name="amount"  placeholder="Enter amount to transfer">
+                    </div>
+                    <div class="form-group">
+                        <label class="mr-sm-2" for="inlineFormCustomSelect">Operation</label>
+                        <select class="custom-select mr-sm-2" name="operand" required>
+                            <option selected disabled value="">Choose...</option>
+                            <option value="1">+ Points</option>
+                            <option value="2">- Points</option>
+                        </select>
+                    </div>
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-primary">Transfer</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+        </div>
+    </div>
+
+    @endif
     <!-- End of Page Wrapper -->
 
     <!-- Scroll to Top Button-->

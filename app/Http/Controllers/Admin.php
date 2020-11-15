@@ -936,4 +936,32 @@ class Admin extends Controller
 
     }
 
+    public function transfer_request_points(Request $request) {
+
+        $exists = User::where('username',$request->username)->first();
+
+        if(!$exists) {
+            return redirect()->back()->withErrors(['alert-msg' => 'Username not found!']);
+        } elseif(!is_numeric($request->amount)) {
+            return redirect()->back()->withErrors(['alert-msg' => 'Amount is not valid!']);
+        }
+
+        if($request->operand == 1) {
+            $operand = '+ ';
+        } else {
+            $operand = '- ';
+        }
+
+        $user = DB::table('users')->where('username',$request->username)->update([
+            'credits' => DB::raw('credits ' . $operand . $request->amount)
+        ]);
+
+        if(!$user) {
+            return redirect()->back()->withErrors(['alert-msg' => 'Can\'t update the credits!']);
+        }
+
+        return redirect()->back()->withErrors(['alert-msg' => 'Successfully transfer to ' . $request->username . ' with amount of ' . $request->amount ]);
+
+    }
+
 }

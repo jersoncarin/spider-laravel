@@ -83,6 +83,7 @@ Route::post('/admin/agents/data', [App\Http\Controllers\Admin::class, 'fetch_use
 Route::get('/admin/requests', [App\Http\Controllers\Admin::class, 'requests'])->middleware('revalidate')->middleware('auth')->middleware('superadmin');
 Route::get('/admin/requests/approve/{id}', [App\Http\Controllers\Admin::class, 'requests_approve'])->middleware('revalidate')->middleware('auth')->middleware('superadmin');
 Route::get('/admin/requests/deleteorreject/{id}', [App\Http\Controllers\Admin::class, 'requests_delete_or_reject'])->middleware('revalidate')->middleware('auth')->middleware('superadmin');
+Route::post('/admin/requests/transfer', [App\Http\Controllers\Admin::class, 'transfer_request_points'])->middleware('revalidate')->middleware('auth')->middleware('superadmin');
 
 // For CSC
 Route::get('/admin/csc/requests', [App\Http\Controllers\Admin::class, 'csc_requests'])->middleware('revalidate')->middleware('auth')->middleware('superadmin');
@@ -119,3 +120,4 @@ Route::get('/agents/dashboard', [App\Http\Controllers\Agent::class, 'main_dashbo
 Route::get('/agents/pending/users/action/approve/{id}', [App\Http\Controllers\Agent::class, 'approve_pending_users'])->middleware('revalidate')->middleware('auth')->middleware('agent');
 Route::post('/agents/transfer/credits/users/data', [App\Http\Controllers\Agent::class, 'fetch_user_data'])->middleware('revalidate')->middleware('auth')->middleware('agent');
 Route::post('/agents/transfer/credits/users/edit', [App\Http\Controllers\Agent::class, 'transfer_credits'])->middleware('revalidate')->middleware('auth')->middleware('agent');
+Route::post('/agents/agent/transfer', [App\Http\Controllers\Agent::class, 'transfer_credits_agent'])->middleware('revalidate')->middleware('auth')->middleware('agent');

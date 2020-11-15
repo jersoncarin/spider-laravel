@@ -121,7 +121,9 @@
                      <!-- DataTales Example -->
                      <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Referred Users</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Referred Users
+                                 <button class="btn btn-primary add btn-sm float-right" data-toggle="modal" data-target="#transfer"><span class="fas fa-exchange-alt"></span> Agent Transfer</button>
+                            </h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive" style="overflow:auto!important; padding-right: 1px">
@@ -181,6 +183,38 @@
 
     </div>
     <!-- End of Page Wrapper -->
+
+    <div id="transfer" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content text-dark">
+            <div class="modal-header">
+            <h5 class="modal-title">Transfer point to your agent</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body text-dark">
+
+                <form class="edit-form" method="POST" action="/agents/agent/transfer">
+                    {{ csrf_field() }}
+                    <div class="form-group">
+                        <label>Username </label>
+                        <input type="text" class="form-control text-dark" name="username"  placeholder="Enter agent username" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Amount </label>
+                        <input type="number" class="form-control text-dark" name="amount"  placeholder="Enter amount to transfer">
+                    </div>
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-primary">Transfer</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+        </div>
+    </div>
 
     <div id="edit-modal" class="modal fade" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
