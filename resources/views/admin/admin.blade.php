@@ -24,7 +24,7 @@
 
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Active Users</h1>
+                        <h1 class="h3 mb-0 text-gray-800">Official Users</h1>
                     </div>
 
                     @if ($errors->any())
@@ -43,7 +43,7 @@
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Total Active Users : {{ $users_count }}
+                            <h6 class="m-0 font-weight-bold text-primary">Total Official Users : {{ $users_count }}
                                 <button class="btn btn-primary add btn-sm float-right" data-toggle="modal" data-target="#add-modal"><span class="fas fa-plus"></span> Add Official</button>
                             </h6>
                         </div>
