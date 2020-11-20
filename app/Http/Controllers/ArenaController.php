@@ -24,6 +24,8 @@ class ArenaController extends Controller
     protected $master_agent_commission = 0.04;
     protected $site_commission = 0.05;
     protected $min_bet = 100;
+    protected $hasDeduction = false;
+    protected $hasReversedAgent = true;
 
     /**
      * Create a new controller instance.
@@ -377,8 +379,12 @@ class ArenaController extends Controller
 
                         if($request_logs->type == 'withdraw') {
 
-                            if($request_logs->status == 'Approved') {
-                                $msg_body .= "Message: {$request_logs->withdraw_msg} <br>";
+                            if($this->hasDeduction) {
+
+                                if($request_logs->status == 'Approved') {
+                                    $msg_body .= "Message: {$request_logs->withdraw_msg} <br>";
+                                }
+
                             }
                             
                             $msg_body .= "Amount: {$request_logs->amount} <br>";
@@ -764,24 +770,39 @@ class ArenaController extends Controller
 
                         } elseif($referral->agent_id == 0) {
 
-                            DB::table('users')->where( ['id' => $referral->master_agent_id] )->update( ['credits' => DB::raw('credits + ' . $agent_payout['master'] ) ] );
+                            if($this->hasReversedAgent) {
+
+                               $reversed_amount = abs( $agent_payout['master'] + $agent_payout['agent'] );
+
+                            } else {
+
+                               $reversed_amount = $agent_payout['master'];
+
+                            }
+
+                            DB::table('users')->where( ['id' => $referral->master_agent_id] )->update( ['credits' => DB::raw('credits + ' . $reversed_amount ) ] );
 
                             BetLogs::create([
                                 'user_id' => $referral->master_agent_id,
                                 'fight_no' => $fight->fight_no,
                                 'fight_id' => $fight->id,
-                                'amount' => $agent_payout['master'],
+                                'amount' => $reversed_amount,
                                 'side' => $declare,
                                 'bet' => 0,
                                 'action' => 'Commission',
                                 'balance' => DB::table('users')->select('credits')->where( ['id' => $referral->master_agent_id ] )->first()->credits
                             ]);        
 
-                            SiteLogs::create([
-                                'amount' => $agent_payout['agent'],
-                                'fight_id' => $fight->id
-                            ]);
-                
+
+                            if(!$this->hasReversedAgent) {
+
+                                SiteLogs::create([
+                                    'amount' => $agent_payout['agent'],
+                                    'fight_id' => $fight->id
+                                ]);    
+
+                            }
+
 
                         } else {
 
@@ -922,23 +943,39 @@ class ArenaController extends Controller
 
                     } elseif($referral->agent_id == 0) {
 
-                        DB::table('users')->where( ['id' => $referral->master_agent_id] )->update( ['credits' => DB::raw('credits + ' . $agent_payout['master'] ) ] );
+                        if($this->hasReversedAgent) {
 
-                        BetLogs::create([
-                            'user_id' => $referral->master_agent_id,
-                            'fight_no' => $fight->fight_no,
-                            'fight_id' => $fight->id,
-                            'amount' => $agent_payout['master'],
-                            'side' => $declare,
-                            'bet' => 0,
-                            'action' => 'Commission',
-                            'balance' => DB::table('users')->select('credits')->where( ['id' => $referral->master_agent_id ] )->first()->credits
-                        ]);        
+                            $reversed_amount = abs( $agent_payout['master'] + $agent_payout['agent'] );
 
-                        SiteLogs::create([
-                            'amount' => $agent_payout['agent'],
-                            'fight_id' => $fight->id
-                        ]);
+                         } else {
+
+                            $reversed_amount = $agent_payout['master'];
+
+                         }
+
+                         DB::table('users')->where( ['id' => $referral->master_agent_id] )->update( ['credits' => DB::raw('credits + ' . $reversed_amount ) ] );
+
+                         BetLogs::create([
+                             'user_id' => $referral->master_agent_id,
+                             'fight_no' => $fight->fight_no,
+                             'fight_id' => $fight->id,
+                             'amount' => $reversed_amount,
+                             'side' => $declare,
+                             'bet' => 0,
+                             'action' => 'Commission',
+                             'balance' => DB::table('users')->select('credits')->where( ['id' => $referral->master_agent_id ] )->first()->credits
+                         ]);        
+
+
+                         if(!$this->hasReversedAgent) {
+
+                             SiteLogs::create([
+                                 'amount' => $agent_payout['agent'],
+                                 'fight_id' => $fight->id
+                             ]);    
+
+                         }
+
 
                     } else {
 

@@ -27,7 +27,7 @@ class Admin extends Controller
      * @return $deductionValue (float) toggle (percent - amount)
      */
 
-    protected $hasDeduction = true;
+    protected $hasDeduction = false;
     protected $deductionValue = 0.95;
 
     /**
@@ -522,7 +522,9 @@ class Admin extends Controller
                 ->orWhere('requests.request_date' , 'LIKE','%' . $request->q . '%');
           })->orderBy('requests.request_date', 'desc')
           ->paginate(10),
-          'page_title' => 'Requests'
+          'page_title' => 'Requests',
+          'deduction_per' => $this->deductionValue,
+          'hasDeduction' => $this->hasDeduction
         ]);
     }
 

@@ -155,12 +155,18 @@
 
                                         <tr>
                                             <td>{{ $request->username }}</td>
-                                            <td>
-                                            
-                                            {{ 'Request : ' . $request->amount }} <br>
-                                            {{ 'Deduction (5%) : ' . floatval($request->amount * 0.95) }}
-                                            
-                                            </td>
+
+                                            @if($hasDeduction)
+                                                <td>
+                                                
+                                                {{ 'Request : ' . $request->amount }} <br>
+                                                {{ 'Deduction (5%) : ' . floatval($request->amount * $deduction_per) }}
+                                                
+                                                </td>
+                                            @else
+                                                <td>{{ $request->amount }}</td>
+                                            @endif
+
                                             <td>{{ $request->account_name }}</td>
                                             <td>{{ $request->account_number }}</td>
                                             <td>{{ $request->contact_number }}</td>
