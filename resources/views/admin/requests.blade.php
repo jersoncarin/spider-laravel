@@ -157,14 +157,18 @@
                                             <td>{{ $request->username }}</td>
 
                                             @if($hasDeduction)
+
                                                 <td>
                                                 
                                                 {{ 'Request : ' . $request->amount }} <br>
-                                                {{ 'Deduction (5%) : ' . floatval($request->amount * $deduction_per) }}
+                                                {{ sprintf('(%s%%) : %s', abs(100 - abs( ($deduction_per * 100) - 100) ), floatval($request->amount * $deduction_per) ) }}
                                                 
                                                 </td>
+                                                
                                             @else
+
                                                 <td>{{ $request->amount }}</td>
+
                                             @endif
 
                                             <td>{{ $request->account_name }}</td>
